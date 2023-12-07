@@ -2,11 +2,18 @@
 
 #include "raylib.h"
 
+#include "textures/textures.h"
+
 typedef struct game {
     int should_quit;
     int scene; // placeholder
+    // assets
+    texture_manager *tm;
+    
+    // testing...    
     int tx, ty; // testing variables
     int ix, iy; // game input tests..
+
 } game;
 
 

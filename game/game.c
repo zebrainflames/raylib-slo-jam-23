@@ -16,6 +16,9 @@ void game_init(game *g) {
     g->scene = 0;
 
     SetTargetFPS(UPDATE_FPS);
+
+    // load assets
+    g->tm = texture_manager_init();
 }
 
 void game_get_input(game *g) {
@@ -39,13 +42,20 @@ void game_draw(game *g) {
     BeginDrawing();
     DrawFPS(10, 10);
 
+    // testing texture draws
+    DrawTexture(g->tm->player_tex, g->tx, g->ty, WHITE);
+
     DrawText("Testing", g->tx, g->ty, 20, RAYWHITE);
     EndDrawing();
 }
 
 void game_quit(game *g) {
     // freeing resources, from asset managers, etc.
-    g->should_quit = 1; // Noop thing to avoid warnings here for now...
+    texture_manager_free(g->tm);
+    // audio_manager_free(g->am);
+    // scene_tree_free(g->st);
+    // .. and so on...
+
     // Raylib cleanup and closing functions..
     CloseAudioDevice();
     CloseWindow();

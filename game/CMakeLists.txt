@@ -21,12 +21,28 @@ if (EMSCRIPTEN)
     endif ()
 endif ()
 
-add_executable(game main.c game.c utils/collisions.h utils/collisions.c utils/cute_c2.h)
+# listing sources here is a bit laboursome -- maybe these should just be GLOBbed??
+set(game_sources ${game_sources}
+    main.c 
+    game.c 
+    textures/textures.c 
+)
+
+add_executable(game ${game_sources})
 target_include_directories(game PRIVATE ${CMAKE_SOURCE_DIR})
 target_link_libraries(game raylib)
 
-set(game_assets)
-file(GLOB assets ${CMAKE_SOURCE_DIR}/assets/*)
-list(APPEND game_assets ${assets})
+#set(game_assets)
+#file(GLOB assets ${CMAKE_SOURCE_DIR}/assets/wip/*)
+#list(APPEND game_assets ${assets})
+#file(COPY ${game_assets} DESTINATION "assets/wip/")
 
-file(COPY ${game_assets} DESTINATION "assets/")
+## At the end of the build, copy assets over to runtime directory structure..
+add_custom_command(
+    TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory 
+        assets
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets)
+
+
+message("--- BUILD COMPLETE ---")
