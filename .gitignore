@@ -1,0 +1,11 @@
+/cmake-build-*/
+/.idea/
+/build/
+.vscode/
+build-emscripten-debug
+build-emscripten-release
+build-emscripten
+venv
+
+## Ignore prototyping and testing assets I don't have distribution licenses to:
+assets/prototyping/superpowers*
