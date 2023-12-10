@@ -23,9 +23,9 @@ endif ()
 
 # listing sources here is a bit laboursome -- maybe these should just be GLOBbed??
 set(game_sources ${game_sources}
-    main.c 
-    game.c 
-    textures/textures.c 
+    "main.c" 
+    "game.c" 
+    "rendering/textures.c" 
 )
 
 add_executable(game ${game_sources})

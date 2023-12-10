@@ -6,6 +6,7 @@ static texture_manager* tm = NULL;
 
 void tm_load_textures(texture_manager *tex) {
     tex->player_tex = LoadTexture("assets/wip/ship-viper.png");
+    
 }
 
 texture_manager* texture_manager_init() {

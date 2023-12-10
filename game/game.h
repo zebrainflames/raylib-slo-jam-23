@@ -2,7 +2,7 @@
 
 #include "raylib.h"
 
-#include "textures/textures.h"
+#include "rendering/textures.h"
 
 typedef struct game {
     int should_quit;
