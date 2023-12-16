@@ -40,13 +40,22 @@ target_link_libraries(game raylib)
 #file(COPY ${game_assets} DESTINATION "assets/wip/")
 
 ## At the end of the build, copy assets over to runtime directory structure..
+## Set asset path according to build type
+# Check if building with Emscripten
+if (EMSCRIPTEN)
+    set(ASSET_PATH "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets")
+else()
+    set(ASSET_PATH "${CMAKE_BINARY_DIR}/$<$<CONFIG:>:${Configuration}/>${PROJECT_NAME}/assets")
+endif()
+
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory 
         ${CMAKE_SOURCE_DIR}/assets
-        #$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets)
+        ${ASSET_PATH}
+        #
         # \/ the below asset target dir _should_ work on visual studio, or other environments. Not tested though.
-        "${CMAKE_BINARY_DIR}/$<$<CONFIG:>:${Configuration}/>${PROJECT_NAME}/assets"
+        
 )
 
 

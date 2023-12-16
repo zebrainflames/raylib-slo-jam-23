@@ -13,6 +13,16 @@ scene* scene_base_new(void)
 }
 
 
+void scene_render(scene* s, void* g)
+{
+    s->render(s, g);
+}
+
+void scene_update(scene* s)
+{
+	s->update(s);
+}
+
 void scene_update_testing(scene *s)
 {
     //printf("would do an update tick here...\n");
@@ -46,19 +56,19 @@ void scene_init_testing(scene_testing* s) {
     
     s->base = base_scene;
     s->base->player = (entity*)calloc(1, sizeof(entity));
+    if (s->base->player == NULL)
+	{
+		fprintf(stderr, "FAILED TO ALLOCATE MEMORY FOR PLAYER!\n");
+		exit(EXIT_FAILURE);
+	}
     s->base->player->x = 200;
     s->base->player->y = 200;
     s->base->enter = NULL;
     s->base->exit = NULL;
     s->base->update = scene_update_testing;
     s->base->render = scene_render_testing;
-    s->base->next_scene = NULL;
-    s->base->previous_scene = NULL;
-    s->tx = 0;
-    s->ty = 0;
-    s->ix = 0;
-    s->iy = 0;
-
+    s->base->next = NULL;
+    s->base->previous = NULL;
 }
 
 void scene_free_testing(scene_testing* s) {

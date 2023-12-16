@@ -47,10 +47,8 @@ void game_get_input(game *g) {
 }
 
 void game_update(game *g) {
-    g->current_scene->update(g->current_scene);
-
-    g->tx += g->ix;
-    g->ty += g->iy;
+    //g->current_scene->update(g->current_scene);
+    scene_update(g->current_scene);
 }
 
 void game_draw(game *g) {
@@ -58,13 +56,10 @@ void game_draw(game *g) {
     BeginDrawing();
     DrawFPS(10, 10);
 
-    // Draw scene
-    g->current_scene->render(g->current_scene, (void*)g);
+    // TODO: why doesn't this compile if game is passed strongly typed?
+    scene_render(g->current_scene, (void*)g);
 
-    // testing texture draws
-    DrawTexture(g->tm->player_tex, g->tx, g->ty, WHITE);
 
-    DrawText("Testing", g->tx, g->ty, 20, RAYWHITE);
     EndDrawing();
 }
 

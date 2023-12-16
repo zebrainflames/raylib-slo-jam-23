@@ -17,18 +17,28 @@ typedef struct scene_s {
     void (*update)(struct scene_s* s);
     void (*render)(struct scene_s* s, void* g);
     // Optional functions to track scene changes -- can be NULL for some scenes
-    struct scene_s* (*next_scene)(void);
-    struct scene_s* (*previous_scene)(void);
+    struct scene_s* previous;
+    struct scene_s* next;
 } scene;
 
-typedef struct scene_testing {
-    scene* base;
-    // testing variables
-    int tx, ty; // testing variables
-    int ix, iy; // game input tests..
-} scene_testing;
 
 scene* scene_base_new(void);
+
+void scene_render(scene* s, void* g);
+
+void scene_update(scene* s);
+
+void scene_enter(scene* s);
+
+void scene_exit(scene* s);
+
+
+/// <summary>
+/// Test scene implementation, can be used as an eample for other scenes
+/// </summary>
+typedef struct scene_testing {
+    scene* base;
+} scene_testing;
 
 void scene_update_testing(scene *s);
 
