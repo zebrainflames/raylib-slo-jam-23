@@ -12,14 +12,22 @@
     </style>
 </head>
 <body>
-<canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
-<script type='text/javascript'>
-    var Module = {
-        print: function(text) { console.log(text); },
-        printErr: function(text) { console.error(text); },
-        canvas: document.getElementById('canvas'),
-    };
-</script>
-{{{ SCRIPT }}}
+    <!--<canvas id="canvas" oncontextmenu="handleContextMenu(event)" tabindex=-1></canvas>-->
+    <canvas id="canvas" tabindex=-1></canvas>
+    <script type='text/javascript'>
+        var Module = {
+            print: function (text) { console.log(text); },
+            printErr: function (text) { console.error(text); },
+            canvas: document.getElementById('canvas'),
+        };
+
+        //function handleContextMenu(e) {
+        //    e.preventDefault();
+        //}
+        document.getElementById('canvas').addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+    </script>
+    {{{ SCRIPT }}}
 </body>
 </html>

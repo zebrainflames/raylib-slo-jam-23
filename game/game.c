@@ -1,4 +1,6 @@
 #include "game.h"
+#include "scenes/scene.h"
+#include "stdio.h"
 
 #define UPDATE_FPS 60
 #define SCREEN_WIDTH 1280
@@ -14,6 +16,18 @@ void game_init(game *g) {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Game shell");
     InitAudioDevice();
     g->scene = 0;
+    scene_testing testing_scene;
+    scene_init_testing(&testing_scene);
+    g->current_scene = testing_scene.base;
+    // initialize scene array
+    g->scene_amount = 1;
+    g->scenes = malloc(g->scene_amount * sizeof(scene*));
+    if (g->scenes == NULL)
+    {
+        fprintf(stderr, "FAILED TO ALLOCATE MEMORY FOR SCENES!\n");
+        exit(EXIT_FAILURE);
+    }
+    g->scenes[0] = g->current_scene; 
 
     SetTargetFPS(UPDATE_FPS);
 
@@ -33,6 +47,8 @@ void game_get_input(game *g) {
 }
 
 void game_update(game *g) {
+    g->current_scene->update();
+
     g->tx += g->ix;
     g->ty += g->iy;
 }
@@ -41,6 +57,9 @@ void game_draw(game *g) {
     ClearBackground(BLACK);
     BeginDrawing();
     DrawFPS(10, 10);
+
+    // Draw scene
+    g->current_scene->render();
 
     // testing texture draws
     DrawTexture(g->tm->player_tex, g->tx, g->ty, WHITE);
@@ -53,8 +72,11 @@ void game_quit(game *g) {
     // freeing resources, from asset managers, etc.
     texture_manager_free(g->tm);
     // audio_manager_free(g->am);
-    // scene_tree_free(g->st);
-    // .. and so on...
+    // free all scenes, safely
+    for (int i = 0; i < g->scene_amount; i++)
+    {
+        free(g->scenes[i]);
+    }
 
     // Raylib cleanup and closing functions..
     CloseAudioDevice();

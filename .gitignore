@@ -1,7 +1,9 @@
 /cmake-build-*/
 /.idea/
 /build/
+/out/
 .vscode/
+.vs/
 build-emscripten-debug
 build-emscripten-release
 build-emscripten
@@ -10,5 +12,5 @@ venv
 ## Ignore prototyping and testing assets I don't have distribution licenses to:
 assets/prototyping/superpowers*
 
-## Ignore aseprite source files:
+## Ignore my asset source files:
 *.aseprite

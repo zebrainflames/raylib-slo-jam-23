@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from genericpath import exists
 import os
 import shutil
 import sys
@@ -34,9 +35,11 @@ except subp.CalledProcessError as e:
 
 # copy files to output folder...
 print("Copying files to build export dir...")
-# TODO: Create builds dir first if it does not exist
-# NOTE: remember to move the data file if you have one!
-#shutil.copy(project + "/game.data", project + "/builds/game.data")
+if not os.path.exists(project + "/dest"):
+    os.mkdir(project + "/dest")
+if os.path.exists(project + "/game.data"):
+    shutil.copy(project + "/game.data", project + "/dest/game.data")
+# the other files should always be there for a default raylib setup
 shutil.copy(project + "/game.js", project+"/dest/game.js")
 shutil.copy(project + "/game.html", project+"/dest/index.html")
 shutil.copy(project + "/game.wasm", project+"/dest/game.wasm")

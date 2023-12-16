@@ -25,7 +25,9 @@ endif ()
 set(game_sources ${game_sources}
     "main.c" 
     "game.c" 
-    "rendering/textures.c" 
+    "rendering/textures.c"
+    "scenes/scene.c"
+    "entities/entity.c"
 )
 
 add_executable(game ${game_sources})
@@ -41,8 +43,11 @@ target_link_libraries(game raylib)
 add_custom_command(
     TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory 
-        assets
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets)
+        ${CMAKE_SOURCE_DIR}/assets
+        #$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets)
+        # \/ the below asset target dir _should_ work on visual studio, or other environments. Not tested though.
+        "${CMAKE_BINARY_DIR}/$<$<CONFIG:>:${Configuration}/>${PROJECT_NAME}/assets"
+)
 
 
 message("--- BUILD COMPLETE ---")

@@ -2,6 +2,7 @@
 
 #include "raylib.h"
 
+#include "game/scenes/scene.h"
 #include "rendering/textures.h"
 
 typedef struct game {
@@ -10,6 +11,11 @@ typedef struct game {
     // assets
     texture_manager *tm;
     
+    // scene setup
+    scene *current_scene;
+    scene **scenes;
+    int scene_amount;
+
     // testing...    
     int tx, ty; // testing variables
     int ix, iy; // game input tests..
