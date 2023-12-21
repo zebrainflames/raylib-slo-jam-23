@@ -4,6 +4,8 @@
 #include "scene.h"
 #include "../game.h"
 
+#include "../entities/player.h"
+
 
 scene* scene_base_new(void)
 {
@@ -25,19 +27,11 @@ void scene_update(scene* s)
 
 void scene_update_testing(scene *s)
 {
-    //printf("would do an update tick here...\n");
-    //scene* s = (scene*)data;
-    int tx = 0, ty = 0;
-    if (IsKeyPressed(KEY_LEFT)) tx--;
-    if (IsKeyPressed(KEY_RIGHT)) tx++;
-    if (IsKeyPressed(KEY_UP)) ty--;
-    if (IsKeyPressed(KEY_DOWN)) ty++;
 
     entity* player = s->player;
     float dt = 1.0f / 60.0f;
-    player->vx += tx * 1000 * dt;
-    player->vy += ty * 1000 * dt;
-    update_entity(player, dt);
+    update_player(player, get_player_input(), dt);
+    wrap_player_on_screen(player, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 void scene_render_testing(scene *s, void* data)
@@ -63,6 +57,7 @@ void scene_init_testing(scene_testing* s) {
 	}
     s->base->player->x = 200;
     s->base->player->y = 200;
+    s->base->player->scale = 0.5f;
     s->base->enter = NULL;
     s->base->exit = NULL;
     s->base->update = scene_update_testing;

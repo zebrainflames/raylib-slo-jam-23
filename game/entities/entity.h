@@ -4,6 +4,9 @@
 
 typedef struct entity_s {
     float x, y, vx, vy;
+    float rotation;
+    float health;
+    float scale;
 } entity;
 
 entity create_entity(float x, float y);

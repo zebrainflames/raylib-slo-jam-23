@@ -2,11 +2,6 @@
 #include "scenes/scene.h"
 #include "stdio.h"
 
-#define UPDATE_FPS 60
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 720
-#define UPDATE_FPS 60
-
 int game_window_should_close(game *g) {
     return WindowShouldClose() || g->should_quit;
 }

@@ -5,6 +5,12 @@
 #include "game/scenes/scene.h"
 #include "rendering/textures.h"
 
+#define UPDATE_FPS 60
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
+#define UPDATE_FPS 60
+
+
 typedef struct game {
     int should_quit;
     int scene; // placeholder

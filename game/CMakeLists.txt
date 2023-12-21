@@ -28,6 +28,7 @@ set(game_sources ${game_sources}
     "rendering/textures.c"
     "scenes/scene.c"
     "entities/entity.c"
+    "entities/player.c"
 )
 
 add_executable(game ${game_sources})

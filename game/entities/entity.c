@@ -3,11 +3,15 @@
 #include "entity.h"
 
 entity create_entity(float x, float y) {
-    entity e ={0};
-    e.x = x;
-    e.y = y;
-    e.vx = 0;
-    e.vy = 0;
+    entity e = {
+        .x = x,
+        .y = y,
+        .vx = 0,
+        .vy = 0,
+        .rotation = 0,
+        .health = 100,
+        .scale = 1.0f
+    };
     return e;
 }
 
@@ -17,5 +21,7 @@ void update_entity(entity *e, float dt) {
 }
 
 void draw_entity(entity *e, Texture2D tex) {
-    DrawTexture(tex, (int)e->x, (int)e->y, WHITE);
+    // scale needs to be taken into account in setting up the origin for correct rotations
+    Vector2 origin = {tex.width/2 * e->scale, tex.height/2 * e->scale};
+    DrawTexturePro(tex, (Rectangle){0, 0, tex.width, tex.height}, (Rectangle){e->x, e->y, tex.width*e->scale, tex.height*e->scale}, origin, e->rotation, WHITE);
 }
