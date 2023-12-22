@@ -6,24 +6,32 @@ int game_window_should_close(game *g) {
     return WindowShouldClose() || g->should_quit;
 }
 
-void game_init(game *g) {
-    *g = (game){0};
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Game shell");
-    InitAudioDevice();
-    g->scene = 0;
-    scene_testing testing_scene;
-    scene_init_testing(&testing_scene);
-    g->current_scene = testing_scene.base;
-    // initialize scene array
-    g->scene_amount = 1;
-    g->scenes = malloc(g->scene_amount * sizeof(scene*));
+void game_add_scene(game *g, scene* (*init_scene)(void)) {
+    // Increase the size of the scene array
+    g->scene_amount++;
+    g->scenes = realloc(g->scenes, g->scene_amount * sizeof(scene*));
     if (g->scenes == NULL)
     {
         fprintf(stderr, "FAILED TO ALLOCATE MEMORY FOR SCENES!\n");
         exit(EXIT_FAILURE);
     }
-    g->scenes[0] = g->current_scene; 
 
+    // Create and initialize the new scene
+    scene* new_scene = init_scene();
+
+    // Add the new scene to the scene array
+    g->scenes[g->scene_amount - 1] = new_scene;
+    // Set the current scene to the new scene
+    g->current_scene = new_scene;
+}
+
+void game_init(game *g) {
+    *g = (game){0};
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Game shell");
+    InitAudioDevice();
+    
+    game_add_scene(g, scene_init_testing);
+    
     SetTargetFPS(UPDATE_FPS);
 
     // load assets
@@ -65,7 +73,7 @@ void game_quit(game *g) {
     // free all scenes, safely
     for (int i = 0; i < g->scene_amount; i++)
     {
-        free(g->scenes[i]);
+        scene_free(g->scenes[i]);
     }
 
     // Raylib cleanup and closing functions..

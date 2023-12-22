@@ -13,7 +13,6 @@
 
 typedef struct game {
     int should_quit;
-    int scene; // placeholder
     // assets
     texture_manager *tm;
     

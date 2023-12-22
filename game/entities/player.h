@@ -26,5 +26,4 @@ void update_player(entity *player, player_input input, float dt);
 
 void wrap_player_on_screen(entity *player, int screen_width, int screen_height);
 
-// TODO: need a specific draw_player function that calls draw_entity, possibly twice,
-// to handle drawing the player with screen wrap and effects like shields and stuff
+void draw_player(entity *player, Texture2D tex);
