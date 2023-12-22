@@ -78,9 +78,7 @@ void scene_free_testing(scene* s) {
     if (s->parent != NULL) {
         printf("freeing parent...\n");
         scene_testing* st = (scene_testing*)s->parent;
-        free(st); // <<-- what happens if we free parent first? do we get a dangling pointer?
-        // NOTE: here we'd free any other resources associated with the scene allocted in st directly
-        
+        free(st);
     }
     printf("freeing player...\n");
     free(s->player);

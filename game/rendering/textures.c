@@ -7,8 +7,7 @@ static texture_manager* tm = NULL;
 #define PLAYER_SHIP_TEX "assets/vector/scout.png"
 
 void tm_load_textures(texture_manager *tex) {
-    tex->player_tex = LoadTexture(PLAYER_SHIP_TEX);
-    
+    tex->player_tex = LoadTexture(PLAYER_SHIP_TEX);    
 }
 
 texture_manager* texture_manager_init() {
