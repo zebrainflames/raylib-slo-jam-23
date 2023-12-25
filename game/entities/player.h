@@ -7,7 +7,7 @@
 #define PLAYER_MAX_SPEED 100.0f
 #define PLAYER_ACCELERATION 100.0f
 #define PLAYER_ROTATION_SPEED 180.0f
-#define PLAYER_DRAG_FACTOR 0.999f
+#define PLAYER_DRAG_FACTOR 0.994f
 
 
 typedef struct player_input {
@@ -21,6 +21,8 @@ typedef struct player_input {
 
 
 player_input get_player_input(void);
+
+entity* create_player(float x, float y);
 
 void update_player(entity *player, player_input input, float dt);
 

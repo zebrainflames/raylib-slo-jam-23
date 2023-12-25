@@ -43,25 +43,15 @@ void scene_render_testing(scene *s, void* data)
     // cast to game* to get access to the texture manager
     game* g = (game*)data;
 	//printf("would do a render tick here...\n");
-	//scene* s = (scene*)data;
-    entity* player = s->player;
-    draw_player(player, g->tm->player_tex);
+    draw_player(s->player, g->tm->player_tex);
 }
 
 scene* scene_init_testing(void) {
     scene_testing* st = malloc(sizeof(scene_testing)); 
     scene* base = scene_base_new();
     st->base = base;
-    //s->base = base_scene;
-    base->player = (entity*)calloc(1, sizeof(entity));
-    if (base->player == NULL)
-	{
-		fprintf(stderr, "FAILED TO ALLOCATE MEMORY FOR PLAYER!\n");
-		exit(EXIT_FAILURE);
-	}
-    base->player->x = 200;
-    base->player->y = 200;
-    base->player->scale = 0.125f;
+    base->player = create_player(200.0f, 200.0f);
+    printf("player->scale after creation: %f\n", base->player->scale);
     base->enter = NULL;
     base->exit = NULL;
     base->update = scene_update_testing;

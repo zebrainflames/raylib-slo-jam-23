@@ -1,15 +1,34 @@
 #include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #include "player.h"
 
-#define PLAYER_COLOR CLITERAL(Color){ 100, 246, 40, 255 }
+#define PLAYER_COLOR CLITERAL(Color){ 220, 246, 200, 255 }
+
+static inline bool left_pressed(void) {
+    return IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A);
+}
+
+static inline bool right_pressed(void) {
+    return IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D);
+}
+
+static inline bool up_pressed(void) {
+    return IsKeyDown(KEY_UP) || IsKeyDown(KEY_W);
+}
+
+static inline bool down_pressed(void) {
+    return IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S);
+}
+
 
 player_input get_player_input(void) {
     player_input input = {0};
-    if (IsKeyDown(KEY_LEFT)) input.rotation -= 1.0f;
-    if (IsKeyDown(KEY_RIGHT)) input.rotation += 1.0f;
-    if (IsKeyDown(KEY_UP)) input.thrust -= 1.0f;
-    if (IsKeyDown(KEY_DOWN)) input.thrust += 1.0f;
+    if (left_pressed()) input.rotation -= 1.0f;
+    if (right_pressed()) input.rotation += 1.0f;
+    if (up_pressed()) input.thrust -= 1.0f;
+    if (down_pressed()) input.thrust += 1.0f;
     if (IsKeyDown(KEY_SPACE)) input.shoot_primary = true;
     return input;
 
@@ -44,4 +63,17 @@ void draw_player(entity *player, Texture2D tex) {
         player->rotation, 
         PLAYER_COLOR
     );
+}
+
+entity* create_player(float x, float y) {
+    entity* player = calloc(1, sizeof(entity));
+    if (player == NULL)
+    {
+        fprintf(stderr, "FAILED TO ALLOCATE MEMORY FOR PLAYER!\n");
+        exit(EXIT_FAILURE);
+    }
+    player->scale = 0.125f; // TODO: update art and set scale to 1.0f
+    player->x = x;
+    player->y = y;
+    return player;
 }
