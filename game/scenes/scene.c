@@ -7,7 +7,7 @@
 
 #include "../entities/player.h"
 
-#define MAX_ASTEROIDS 100
+#define MAX_ASTEROIDS 10
 #define ASTEROID_SPAWN_RATE 1.0f
 
 static int asteroid_count = 0;
@@ -50,8 +50,18 @@ void scene_update_testing(scene *s)
 
     // check for collisions, between player and asteroids and between projectiles and asteroids
     for (int i = 0; i < asteroid_count; i++) {
-        if (CheckCollisionCircles((Vector2){player->x, player->y}, 20.0f, (Vector2){s->asteroids[i].x, s->asteroids[i].y}, 20.0f)) {
+        if (CheckCollisionCircles((Vector2){player->x, player->y}, PLAYER_COLLIDER_SIZE, (Vector2){s->asteroids[i].x, s->asteroids[i].y}, 20.0f)) {
             printf("player hit by asteroid %d\n", i);
+        }
+    }
+
+    // If an asteroid is outside of the screen, remove it
+    for (int i = 0; i < asteroid_count; i++) {
+        if (s->asteroids[i].x < -100.0f || s->asteroids[i].x > SCREEN_WIDTH + 100.0f || s->asteroids[i].y < -100.0f || s->asteroids[i].y > SCREEN_HEIGHT + 100.0f) {
+            printf("removing asteroid %d\n", i);
+            // remove asteroid by moving the last asteroid to this position and decrementing the asteroid count
+            s->asteroids[i] = s->asteroids[asteroid_count-1];
+            asteroid_count--;
         }
     }
 
