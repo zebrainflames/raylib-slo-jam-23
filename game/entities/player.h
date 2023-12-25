@@ -8,7 +8,7 @@
 #define PLAYER_ACCELERATION 100.0f
 #define PLAYER_ROTATION_SPEED 180.0f
 #define PLAYER_DRAG_FACTOR 0.994f
-
+#define PLAYER_COLLIDER_SIZE 20.0f
 
 typedef struct player_input {
     float rotation;

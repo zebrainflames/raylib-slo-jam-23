@@ -4,7 +4,10 @@
 
 typedef struct texture_manager {
     Texture2D player_tex;
+    // objects
 
+    // enemies
+    Texture2D meteor_tex;
 } texture_manager;
 
 
