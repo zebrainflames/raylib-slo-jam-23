@@ -6,6 +6,9 @@
 
 #define PLAYER_COLOR CLITERAL(Color){ 220, 246, 200, 255 }
 
+bool player_shoot_primary = false;
+//static bool player_shoot_seconday = false;
+
 static inline bool left_pressed(void) {
     return IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A);
 }
@@ -22,6 +25,7 @@ static inline bool down_pressed(void) {
     return IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S);
 }
 
+static float time_since_primary = 0.0f;
 
 player_input get_player_input(void) {
     player_input input = {0};
@@ -43,6 +47,14 @@ void update_player(entity *player, player_input input, float dt) {
     player->vy += dvy * input.thrust;
     player->vx += dvx * input.thrust;
     update_entity(player, dt);
+
+    if (time_since_primary >= PLAYER_PRIMARY_COOLDOWN && input.shoot_primary) {
+        time_since_primary = 0.0f;
+        player_shoot_primary = true;
+    } else {
+        player_shoot_primary = false;
+    }
+    time_since_primary += dt;
 }
 
 void wrap_player_on_screen(entity *player, int screen_width, int screen_height) {

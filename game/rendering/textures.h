@@ -8,6 +8,9 @@ typedef struct texture_manager {
 
     // enemies
     Texture2D meteor_tex;
+
+    // projectiles
+    Texture2D bullet_tex;
 } texture_manager;
 
 

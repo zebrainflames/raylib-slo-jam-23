@@ -10,6 +10,9 @@
 #define PLAYER_DRAG_FACTOR 0.994f
 #define PLAYER_COLLIDER_SIZE 20.0f
 
+// TODO: replace these with weapon definitions
+#define PLAYER_PRIMARY_COOLDOWN 0.2f
+
 typedef struct player_input {
     float rotation;
     float thrust; // 0.0f to 1.0f, just a choice in case I have time for gamepad support
@@ -19,6 +22,7 @@ typedef struct player_input {
     float time_since_secondary;
 } player_input;
 
+extern bool player_shoot_primary;
 
 player_input get_player_input(void);
 

@@ -4,14 +4,18 @@
 
 #include "scene.h"
 #include "../game.h"
+#include "../entities/basic_bullet.h"
 
 #include "../entities/player.h"
 
 #define MAX_ASTEROIDS 10
+#define MAX_BULLETS 1000
 #define ASTEROID_SPAWN_RATE 1.0f
 
 static int asteroid_count = 0;
 static float time_since_last_asteroid = 0.0f;
+
+static int bullet_count = 0;
 
 scene* scene_base_new(void)
 {
@@ -35,35 +39,7 @@ void scene_free(scene* s) {
     s->free_scene(s);
 }
 
-void scene_update_testing(scene *s)
-{
-
-    entity* player = s->player;
-    float dt = 1.0f / 60.0f;
-    update_player(player, get_player_input(), dt);
-    wrap_player_on_screen(player, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    // update asteroids
-    for (int i = 0; i < asteroid_count; i++) {
-        update_entity(&s->asteroids[i], dt);
-    }
-
-    // check for collisions, between player and asteroids and between projectiles and asteroids
-    for (int i = 0; i < asteroid_count; i++) {
-        if (CheckCollisionCircles((Vector2){player->x, player->y}, PLAYER_COLLIDER_SIZE, (Vector2){s->asteroids[i].x, s->asteroids[i].y}, 20.0f)) {
-            printf("player hit by asteroid %d\n", i);
-        }
-    }
-
-    // If an asteroid is outside of the screen, remove it
-    for (int i = 0; i < asteroid_count; i++) {
-        if (s->asteroids[i].x < -100.0f || s->asteroids[i].x > SCREEN_WIDTH + 100.0f || s->asteroids[i].y < -100.0f || s->asteroids[i].y > SCREEN_HEIGHT + 100.0f) {
-            printf("removing asteroid %d\n", i);
-            // remove asteroid by moving the last asteroid to this position and decrementing the asteroid count
-            s->asteroids[i] = s->asteroids[asteroid_count-1];
-            asteroid_count--;
-        }
-    }
+void spawn_asteroid(scene *s, entity* player, float dt) {
 
     // spawn asteroids
     time_since_last_asteroid += dt;
@@ -72,12 +48,6 @@ void scene_update_testing(scene *s)
         if (asteroid_count < MAX_ASTEROIDS) {
             // spawn asteroid
             asteroid_count++;
-            printf("spawning asteroid %d\n", asteroid_count);
-            // TODO: note that this will either break or we have to make sure we
-            // remove destroyed asteroids from the array whenever that happens
-            // let's go with the latter for now
-            // get start pos randomly outside of screen
-            // TODO: move to a separate header file to avoid cluttering this file
             float x = (float)GetRandomValue(0, SCREEN_WIDTH);
             float y = (float)GetRandomValue(0, SCREEN_HEIGHT);
             int side = GetRandomValue(0, 3);
@@ -110,6 +80,62 @@ void scene_update_testing(scene *s)
     }
 }
 
+void spawn_bullet(scene *s, entity* player) {
+    // TODO: Spawn bullet projectiles here according to players primary weapon
+    printf("Would spawn bullet for player at (%f, %f) (angle %f)\n", player->x, player->y, player->rotation);
+    if (bullet_count >= MAX_BULLETS) {
+        printf("CANNOT CREATE BULLET, BULLETS MAXED!");
+        // TODO: instead just destroy the oldest bullet if needed
+        return;
+    }
+    bullet_count++;
+    entity bullet = create_basic_bullet(player->x, player->y, 100.0f, 100.0f, player->rotation);
+    s->projectiles[bullet_count-1] = bullet;
+}
+
+void scene_update_testing(scene *s)
+{
+
+    entity* player = s->player;
+    float dt = 1.0f / 60.0f;
+    update_player(player, get_player_input(), dt);
+    wrap_player_on_screen(player, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    // update asteroids
+    for (int i = 0; i < asteroid_count; i++) {
+        update_entity(&s->asteroids[i], dt);
+    }
+
+    // update bullet_basic
+    for (int i = 0; i < bullet_count; i++) {
+        update_entity(&s->projectiles[i], dt);
+    }
+
+    // check for collisions, between player and asteroids and between projectiles and asteroids
+    for (int i = 0; i < asteroid_count; i++) {
+        if (CheckCollisionCircles((Vector2){player->x, player->y}, PLAYER_COLLIDER_SIZE, (Vector2){s->asteroids[i].x, s->asteroids[i].y}, 20.0f)) {
+            printf("player hit by asteroid %d\n", i);
+        }
+    }
+
+    spawn_asteroid(s, player, dt);
+
+    if (player_shoot_primary)
+        spawn_bullet(s, player);
+
+    // If an asteroid is outside of the screen, remove it
+    for (int i = 0; i < asteroid_count; i++) {
+        if (s->asteroids[i].x < -100.0f || s->asteroids[i].x > SCREEN_WIDTH + 100.0f || s->asteroids[i].y < -100.0f || s->asteroids[i].y > SCREEN_HEIGHT + 100.0f) {
+            printf("removing asteroid %d\n", i);
+            // remove asteroid by moving the last asteroid to this position and decrementing the asteroid count
+            s->asteroids[i] = s->asteroids[asteroid_count-1];
+            asteroid_count--;
+        }
+    }
+}
+
+#define ARRAYLEN sizeof(arr) / sizeof(arr[0])
+
 void scene_render_testing(scene *s, void* data)
 {
     // cast to game* to get access to the texture manager
@@ -122,6 +148,10 @@ void scene_render_testing(scene *s, void* data)
         draw_entity(&s->asteroids[i], g->tm->meteor_tex);
     }
 
+    // draw projectiles
+    for (int i = 0; i < bullet_count; i++) {
+        draw_entity(&s->projectiles[i], g->tm->bullet_tex);
+    }
 }
 
 scene* scene_init_testing(void) {
@@ -139,6 +169,7 @@ scene* scene_init_testing(void) {
     base->previous = NULL;
     base->parent = st;
     base->asteroids = malloc(sizeof(entity)*MAX_ASTEROIDS);
+    base->projectiles = malloc(sizeof(entity)*MAX_BULLETS);
     return base;
 }
 
