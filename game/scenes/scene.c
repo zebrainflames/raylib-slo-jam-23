@@ -116,7 +116,13 @@ void scene_update_testing(scene *s)
         if (CheckCollisionCircles((Vector2){player->x, player->y}, PLAYER_COLLIDER_SIZE, (Vector2){s->asteroids[i].x, s->asteroids[i].y}, 20.0f)) {
             printf("player hit by asteroid %d\n", i);
         }
+        for (int j = 0; j < bullet_count; j++) {
+            if (CheckCollisionCircles((Vector2){s->asteroids[i].x, s->asteroids[i].y}, 20.0f, (Vector2){s->projectiles[j].x, s->projectiles[j].y}, BASIC_BULLET_SIZE)) {
+                printf("Bullet hit asteroid\n");
+            }
+        }
     }
+    
 
     spawn_asteroid(s, player, dt);
 
