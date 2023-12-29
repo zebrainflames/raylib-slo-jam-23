@@ -87,5 +87,6 @@ entity* create_player(float x, float y) {
     player->scale = 0.125f; // TODO: update art and set scale to 1.0f
     player->x = x;
     player->y = y;
+    player->health = 100.0f;
     return player;
 }

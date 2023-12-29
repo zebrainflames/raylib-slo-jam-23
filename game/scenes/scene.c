@@ -70,6 +70,7 @@ void spawn_asteroid(scene *s, entity* player, float dt) {
                     break;
             }
             s->asteroids[asteroid_count-1] = create_entity(x, y);
+            s->asteroids[asteroid_count-1].health = 5.0f; // TODO: define asteroid health somewhere
             // set asteroid velocity towards player
             float dx = player->x - s->asteroids[asteroid_count-1].x;
             float dy = player->y - s->asteroids[asteroid_count-1].y;
@@ -77,12 +78,65 @@ void spawn_asteroid(scene *s, entity* player, float dt) {
             s->asteroids[asteroid_count-1].vx = dx / len * 50.0f;
             s->asteroids[asteroid_count-1].vy = dy / len * 50.0f;
         }
+        // TODO:
+    }
+}
+
+void remove_entity(entity* entities, int idx, int *entity_count) {
+    //printf("removing entity %d\n", idx);
+    // remove asteroid by moving the last asteroid to this position and decrementing the asteroid count
+    entities[idx] = entities[*entity_count-1];
+    *entity_count = *entity_count - 1;
+}
+
+static inline bool is_outside_screen(entity e) {
+    const float margin = 100.0f;
+    return e.x < -margin || e.x > SCREEN_WIDTH + margin || e.y < -margin || e.y > SCREEN_HEIGHT + margin;
+}
+
+// Remove offscreen and dead entities
+void remove_entitites(scene *s) {
+    // TODO: there's probably a bug when multiple objects need to be removed
+    for (int i = 0; i < asteroid_count; i++) {
+        if (is_outside_screen(s->asteroids[i])) {
+            remove_entity(s->asteroids, i, &asteroid_count);
+            continue;
+        }
+        if (s->asteroids[i].health <= 0.0f) {
+            remove_entity(s->asteroids, i, &asteroid_count);
+        }
+    }
+    for (int i = 0; i < bullet_count; i++) {
+        if (is_outside_screen(s->projectiles[i])) {
+            remove_entity(s->projectiles, i, &bullet_count);
+            continue;
+        }
+        if (s->projectiles[i].health <= 0.0f) {
+            remove_entity(s->projectiles, i, &bullet_count);
+        }
+    }
+}
+
+void scene_check_collisions(scene *s, entity *player) {
+    for (int i = 0; i < asteroid_count; i++) {
+        
+        if (CheckCollisionCircles((Vector2){player->x, player->y}, PLAYER_COLLIDER_SIZE, (Vector2){s->asteroids[i].x, s->asteroids[i].y}, 20.0f)) {
+            //printf("player hit by asteroid %d\n", i);
+            player->health -= 10.0f;
+            s->asteroids[i].health -= 5.0f;
+        }
+        for (int j = 0; j < bullet_count; j++) {
+            if (CheckCollisionCircles((Vector2){s->asteroids[i].x, s->asteroids[i].y}, 20.0f, (Vector2){s->projectiles[j].x, s->projectiles[j].y}, BASIC_BULLET_SIZE)) {
+                //printf("Bullet hit asteroid\n");
+                s->asteroids[i].health -= BASIC_BULLET_DAMAGE;
+                s->projectiles[j].health = -1.0f;
+            }
+        }
     }
 }
 
 void spawn_bullet(scene *s, entity* player) {
     // TODO: Spawn bullet projectiles here according to players primary weapon
-    printf("Would spawn bullet for player at (%f, %f) (angle %f)\n", player->x, player->y, player->rotation);
     if (bullet_count >= MAX_BULLETS) {
         printf("CANNOT CREATE BULLET, BULLETS MAXED!");
         // TODO: instead just destroy the oldest bullet if needed
@@ -112,16 +166,7 @@ void scene_update_testing(scene *s)
     }
 
     // check for collisions, between player and asteroids and between projectiles and asteroids
-    for (int i = 0; i < asteroid_count; i++) {
-        if (CheckCollisionCircles((Vector2){player->x, player->y}, PLAYER_COLLIDER_SIZE, (Vector2){s->asteroids[i].x, s->asteroids[i].y}, 20.0f)) {
-            printf("player hit by asteroid %d\n", i);
-        }
-        for (int j = 0; j < bullet_count; j++) {
-            if (CheckCollisionCircles((Vector2){s->asteroids[i].x, s->asteroids[i].y}, 20.0f, (Vector2){s->projectiles[j].x, s->projectiles[j].y}, BASIC_BULLET_SIZE)) {
-                printf("Bullet hit asteroid\n");
-            }
-        }
-    }
+    scene_check_collisions(s, player);
     
 
     spawn_asteroid(s, player, dt);
@@ -129,18 +174,13 @@ void scene_update_testing(scene *s)
     if (player_shoot_primary)
         spawn_bullet(s, player);
 
-    // If an asteroid is outside of the screen, remove it
-    for (int i = 0; i < asteroid_count; i++) {
-        if (s->asteroids[i].x < -100.0f || s->asteroids[i].x > SCREEN_WIDTH + 100.0f || s->asteroids[i].y < -100.0f || s->asteroids[i].y > SCREEN_HEIGHT + 100.0f) {
-            printf("removing asteroid %d\n", i);
-            // remove asteroid by moving the last asteroid to this position and decrementing the asteroid count
-            s->asteroids[i] = s->asteroids[asteroid_count-1];
-            asteroid_count--;
-        }
+    // If an asteroid is outside of the screen and outside spawn area, remove it
+    remove_entitites(s);
+
+    if (player->health <= 0.0) {
+        printf("PLAYER IS DEAD!\n");
     }
 }
-
-#define ARRAYLEN sizeof(arr) / sizeof(arr[0])
 
 void scene_render_testing(scene *s, void* data)
 {
