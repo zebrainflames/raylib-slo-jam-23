@@ -119,11 +119,10 @@ void remove_entitites(scene *s) {
 
 void scene_check_collisions(scene *s, entity *player) {
     for (int i = 0; i < asteroid_count; i++) {
-        
         if (CheckCollisionCircles((Vector2){player->x, player->y}, PLAYER_COLLIDER_SIZE, (Vector2){s->asteroids[i].x, s->asteroids[i].y}, 20.0f)) {
             //printf("player hit by asteroid %d\n", i);
-            player->health -= 10.0f;
-            s->asteroids[i].health -= 5.0f;
+            player->health -= ASTEROID_COLLISION_DAMAGE;
+            s->asteroids[i].health -= ASTEROID_COLLISION_DAMAGE;
         }
         for (int j = 0; j < bullet_count; j++) {
             if (CheckCollisionCircles((Vector2){s->asteroids[i].x, s->asteroids[i].y}, 20.0f, (Vector2){s->projectiles[j].x, s->projectiles[j].y}, BASIC_BULLET_SIZE)) {

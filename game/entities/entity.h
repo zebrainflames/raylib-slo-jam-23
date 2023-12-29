@@ -2,6 +2,8 @@
 
 #include "raylib.h" // <-- For Texture2D -- TODO: replace with renderer.h or something
 
+#define ASTEROID_COLLISION_DAMAGE 10.0f
+
 typedef struct entity_s {
     float x, y, vx, vy;
     float rotation;

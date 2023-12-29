@@ -84,6 +84,7 @@ entity* create_player(float x, float y) {
         fprintf(stderr, "FAILED TO ALLOCATE MEMORY FOR PLAYER!\n");
         exit(EXIT_FAILURE);
     }
+    
     player->scale = 0.125f; // TODO: update art and set scale to 1.0f
     player->x = x;
     player->y = y;
