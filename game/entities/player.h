@@ -28,6 +28,8 @@ player_input get_player_input(void);
 
 entity* create_player(float x, float y);
 
+void reset_player(entity *player);
+
 void update_player(entity *player, player_input input, float dt);
 
 void wrap_player_on_screen(entity *player, int screen_width, int screen_height);

@@ -148,7 +148,13 @@ void spawn_bullet(scene *s, entity* player) {
 
 void scene_update_testing(scene *s)
 {
-
+    if (s->current_state != GAME_STATE_PLAYING) {
+        if (IsKeyPressed(KEY_R)) {
+            scene_reset_testing(s);
+            s->current_state = GAME_STATE_PLAYING;
+        }
+        return;
+    }
     entity* player = s->player;
     float dt = 1.0f / 60.0f;
     update_player(player, get_player_input(), dt);
@@ -178,6 +184,7 @@ void scene_update_testing(scene *s)
 
     if (player->health <= 0.0) {
         printf("PLAYER IS DEAD!\n");
+        s->current_state = GAME_STATE_GAME_OVER;
     }
 }
 
@@ -197,14 +204,18 @@ void scene_render_testing(scene *s, void* data)
     for (int i = 0; i < bullet_count; i++) {
         draw_entity(&s->projectiles[i], g->tm->bullet_tex);
     }
+
+    if (s->current_state == GAME_STATE_GAME_OVER) {
+        DrawText("GAME OVER\n Press 'R' to restart", 100, 100, 20, RED);
+    }
 }
 
 scene* scene_init_testing(void) {
+    
     scene_testing* st = malloc(sizeof(scene_testing)); 
     scene* base = scene_base_new();
     st->base = base;
     base->player = create_player(200.0f, 200.0f);
-    printf("player->scale after creation: %f\n", base->player->scale);
     base->enter = NULL;
     base->exit = NULL;
     base->update = scene_update_testing;
@@ -215,7 +226,19 @@ scene* scene_init_testing(void) {
     base->parent = st;
     base->asteroids = malloc(sizeof(entity)*MAX_ASTEROIDS);
     base->projectiles = malloc(sizeof(entity)*MAX_BULLETS);
+    base->current_state = GAME_STATE_PLAYING;
     return base;
+}
+
+void scene_reset_testing(scene *s) {
+    printf("resetting testing scene...\n");
+    printf("resetting player...\n");
+    reset_player(s->player);
+
+    printf("resetting asteroids and bullets...\n");
+    asteroid_count = 0;
+    bullet_count = 0;
+    time_since_last_asteroid = 0.0f;
 }
 
 void scene_free_testing(scene* s) {

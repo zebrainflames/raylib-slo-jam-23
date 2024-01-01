@@ -77,6 +77,13 @@ void draw_player(entity *player, Texture2D tex) {
     );
 }
 
+void reset_player(entity *player) {
+    player->vx = 0.0f;
+    player->vy = 0.0f;
+    player->rotation = 0.0f;
+    player->health = 100.0f;
+}
+
 entity* create_player(float x, float y) {
     entity* player = calloc(1, sizeof(entity));
     if (player == NULL)

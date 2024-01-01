@@ -4,12 +4,16 @@
 
 ///#include "../game.h"
 #include "../entities/entity.h"
+#include "game_state.h"
 
 typedef struct scene_s {
     entity* asteroids;
     entity* projectiles;
     entity* player;
     entity* enemies;
+
+    // 
+    game_state current_state;
 
     // function pointers to track scene enter, exit, update and render capabilities
     void (*enter)(void);
@@ -44,6 +48,8 @@ void scene_free(scene* s);
 typedef struct scene_testing {
     scene* base;
 } scene_testing;
+
+void scene_reset_testing(scene *s);
 
 void scene_update_testing(scene *s);
 
