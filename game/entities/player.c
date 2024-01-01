@@ -6,6 +6,9 @@
 
 #define PLAYER_COLOR CLITERAL(Color){ 220, 246, 200, 255 }
 
+static float spawn_x = -1.0f;
+static float spawn_y = -1.0f;
+
 bool player_shoot_primary = false;
 //static bool player_shoot_seconday = false;
 
@@ -82,6 +85,8 @@ void reset_player(entity *player) {
     player->vy = 0.0f;
     player->rotation = 0.0f;
     player->health = 100.0f;
+    player->x = spawn_x;
+    player->y = spawn_y;
 }
 
 entity* create_player(float x, float y) {
@@ -95,6 +100,8 @@ entity* create_player(float x, float y) {
     player->scale = 0.125f; // TODO: update art and set scale to 1.0f
     player->x = x;
     player->y = y;
+    spawn_x = x;
+    spawn_y = y;
     player->health = 100.0f;
     return player;
 }

@@ -10,7 +10,6 @@ static game g;
 
 void main_loop()
 {
-    game_get_input(&g);
     game_update(&g);
     game_draw(&g);
 }

@@ -7,7 +7,6 @@ int game_window_should_close(game *g) {
 }
 
 void game_add_scene(game *g, scene* (*init_scene)(void)) {
-    // Increase the size of the scene array
     g->scene_amount++;
     g->scenes = realloc(g->scenes, g->scene_amount * sizeof(scene*));
     if (g->scenes == NULL)
@@ -15,13 +14,8 @@ void game_add_scene(game *g, scene* (*init_scene)(void)) {
         fprintf(stderr, "FAILED TO ALLOCATE MEMORY FOR SCENES!\n");
         exit(EXIT_FAILURE);
     }
-
-    // Create and initialize the new scene
     scene* new_scene = init_scene();
-
-    // Add the new scene to the scene array
     g->scenes[g->scene_amount - 1] = new_scene;
-    // Set the current scene to the new scene
     g->current_scene = new_scene;
 }
 
@@ -38,31 +32,14 @@ void game_init(game *g) {
     g->tm = texture_manager_init();
 }
 
-void game_get_input(game *g) {
-    int ix = 0;
-    int iy = 0;
-    if (IsKeyPressed(KEY_LEFT)) ix--;
-    if (IsKeyPressed(KEY_RIGHT)) ix++;
-    if (IsKeyPressed(KEY_UP)) iy--;
-    if (IsKeyPressed(KEY_DOWN)) iy++;
-    g->ix = ix;
-    g->iy = iy;
-}
-
 void game_update(game *g) {
-    //g->current_scene->update(g->current_scene);
     scene_update(g->current_scene);
 }
 
 void game_draw(game *g) {
     ClearBackground(BLACK);
     BeginDrawing();
-    DrawFPS(10, 10);
-
-    // TODO: why doesn't this compile if game is passed strongly typed?
-    scene_render(g->current_scene, (void*)g);
-
-
+    scene_render(g->current_scene, g);
     EndDrawing();
 }
 

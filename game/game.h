@@ -11,14 +11,14 @@
 #define UPDATE_FPS 60
 
 
-typedef struct game {
+typedef struct game_t {
     int should_quit;
     // assets
     texture_manager *tm;
     
     // scene setup
-    scene *current_scene;
-    scene **scenes;
+    struct scene_s *current_scene;
+    struct scene_s **scenes;
     int scene_amount;
 
     // testing...    
@@ -31,8 +31,6 @@ typedef struct game {
 int game_window_should_close(game *g);
 
 void game_init(game *g);
-
-void game_get_input(game *g);
 
 void game_update(game *g);
 

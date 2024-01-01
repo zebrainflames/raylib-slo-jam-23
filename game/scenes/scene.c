@@ -14,18 +14,16 @@
 
 static int asteroid_count = 0;
 static float time_since_last_asteroid = 0.0f;
-
 static int bullet_count = 0;
 
 scene* scene_base_new(void)
 {
     scene* s = calloc(1, sizeof(scene));
-    // remember to init everything, now all is null :-D
     return s;
 }
 
 
-void scene_render(scene* s, void* g)
+void scene_render(scene* s, game *g)
 {
     s->render(s, g);
 }
@@ -40,7 +38,6 @@ void scene_free(scene* s) {
 }
 
 void spawn_asteroid(scene *s, entity* player, float dt) {
-
     // spawn asteroids
     time_since_last_asteroid += dt;
     if (time_since_last_asteroid > ASTEROID_SPAWN_RATE) {
@@ -78,7 +75,6 @@ void spawn_asteroid(scene *s, entity* player, float dt) {
             s->asteroids[asteroid_count-1].vx = dx / len * 50.0f;
             s->asteroids[asteroid_count-1].vy = dy / len * 50.0f;
         }
-        // TODO:
     }
 }
 
@@ -188,11 +184,8 @@ void scene_update_testing(scene *s)
     }
 }
 
-void scene_render_testing(scene *s, void* data)
+void scene_render_testing(scene *s, game *g)
 {
-    // cast to game* to get access to the texture manager
-    game* g = (game*)data;
-	//printf("would do a render tick here...\n");
     draw_player(s->player, g->tm->player_tex);
 
     // draw asteroids
@@ -211,11 +204,8 @@ void scene_render_testing(scene *s, void* data)
 }
 
 scene* scene_init_testing(void) {
-    
-    scene_testing* st = malloc(sizeof(scene_testing)); 
     scene* base = scene_base_new();
-    st->base = base;
-    base->player = create_player(200.0f, 200.0f);
+    base->player = create_player(SCREEN_WIDTH / 2.0f - 32.0f, SCREEN_HEIGHT / 2.0f - 32.0f);
     base->enter = NULL;
     base->exit = NULL;
     base->update = scene_update_testing;
@@ -223,7 +213,6 @@ scene* scene_init_testing(void) {
     base->free_scene = scene_free_testing;
     base->next = NULL;
     base->previous = NULL;
-    base->parent = st;
     base->asteroids = malloc(sizeof(entity)*MAX_ASTEROIDS);
     base->projectiles = malloc(sizeof(entity)*MAX_BULLETS);
     base->current_state = GAME_STATE_PLAYING;
@@ -231,11 +220,7 @@ scene* scene_init_testing(void) {
 }
 
 void scene_reset_testing(scene *s) {
-    printf("resetting testing scene...\n");
-    printf("resetting player...\n");
     reset_player(s->player);
-
-    printf("resetting asteroids and bullets...\n");
     asteroid_count = 0;
     bullet_count = 0;
     time_since_last_asteroid = 0.0f;
@@ -243,14 +228,7 @@ void scene_reset_testing(scene *s) {
 
 void scene_free_testing(scene* s) {
     printf("freeing testing scene...\n");
-    if (s->parent != NULL) {
-        printf("freeing parent...\n");
-        scene_testing* st = (scene_testing*)s->parent;
-        free(st);
-    }
     printf("freeing player...\n");
     free(s->player);
-    printf("freeing base...\n");
     free(s);
-
 }
