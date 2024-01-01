@@ -140,17 +140,26 @@ void spawn_bullet(scene *s, entity* player) {
     bullet_count++;
     entity bullet = create_basic_bullet(player->x, player->y, 100.0f, 100.0f, player->rotation);
     s->projectiles[bullet_count-1] = bullet;
+    // knockback to player..
+    weapon_knockback_player(player, BASIC_BULLET_KNOCKBACK);
 }
 
 void scene_update_testing(scene *s)
 {
-    if (s->current_state != GAME_STATE_PLAYING) {
+    if (s->current_state == GAME_STATE_GAME_OVER) {
         if (IsKeyPressed(KEY_R)) {
             scene_reset_testing(s);
             s->current_state = GAME_STATE_PLAYING;
         }
         return;
     }
+
+    if (s->current_state == GAME_STATE_PAUSED) {
+        // TODO: implement pause menu logic
+
+        return;
+    }
+
     entity* player = s->player;
     float dt = 1.0f / 60.0f;
     update_player(player, get_player_input(), dt);

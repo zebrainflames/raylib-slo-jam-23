@@ -35,7 +35,7 @@ player_input get_player_input(void) {
     if (left_pressed()) input.rotation -= 1.0f;
     if (right_pressed()) input.rotation += 1.0f;
     if (up_pressed()) input.thrust -= 1.0f;
-    if (down_pressed()) input.thrust += 1.0f;
+    //if (down_pressed()) input.thrust += 1.0f;
     if (IsKeyDown(KEY_SPACE)) input.shoot_primary = true;
     return input;
 
@@ -58,6 +58,14 @@ void update_player(entity *player, player_input input, float dt) {
         player_shoot_primary = false;
     }
     time_since_primary += dt;
+}
+
+void weapon_knockback_player(entity* player, float amount) {
+    // destruct amount to x and y components
+    float dx = cosf(player->rotation*DEG2RAD - PI/2.0f) * amount;
+    float dy = sinf(player->rotation*DEG2RAD - PI/2.0f) * amount;
+    player->vx -= dx;
+    player->vy -= dy;
 }
 
 void wrap_player_on_screen(entity *player, int screen_width, int screen_height) {

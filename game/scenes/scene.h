@@ -9,13 +9,17 @@
 typedef struct game_t game;
 
 typedef struct scene_s {
+    // entities
     entity* asteroids;
     entity* projectiles;
     entity* player;
     entity* enemies;
 
-    // 
+    // game state management
     game_state current_state;
+    //wave_spawner spawner
+    int player_level;
+    float time_left;
 
     // function pointers to track scene enter, exit, update and render capabilities
     void (*enter)(void);
