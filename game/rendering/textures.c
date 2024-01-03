@@ -4,9 +4,9 @@
 
 static texture_manager* tm = NULL;
 
-#define PLAYER_SHIP_TEX "assets/simple_space/PNG/Default/ship_G.png"
-#define METEOR_TEX "assets/simple_space/PNG/Default/meteor_squareDetailedLarge.png"
-#define BULLET_TEX "assets/wip/bullet_basic.png"
+#define PLAYER_SHIP_TEX "assets/selected/ship_G.png"
+#define METEOR_TEX "assets/selected/meteor_squareDetailedLarge.png"
+#define BULLET_TEX "assets/selected/bullet_basic.png"
 
 
 void tm_load_textures(texture_manager *tex) {

@@ -10,9 +10,7 @@ build-emscripten
 venv
 
 ## Ignore prototyping and testing assets I don't have distribution licenses to:
-assets/prototyping/superpowers*
-assets/wip*
-assets/vector/*.svg
+assets/simple_space
 
 ## Ignore my asset source files:
 *.aseprite
