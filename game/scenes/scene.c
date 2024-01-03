@@ -138,7 +138,7 @@ void spawn_bullet(scene *s, entity* player) {
         return;
     }
     bullet_count++;
-    entity bullet = create_basic_bullet(player->x, player->y, 100.0f, 100.0f, player->rotation);
+    entity bullet = create_basic_bullet(player->x, player->y, player->rotation);
     s->projectiles[bullet_count-1] = bullet;
     // knockback to player..
     weapon_knockback_player(player, BASIC_BULLET_KNOCKBACK);
