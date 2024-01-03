@@ -4,7 +4,7 @@
 
 #include "player.h"
 
-#define PLAYER_COLOR CLITERAL(Color){ 220, 246, 200, 255 }
+#define PLAYER_COLOR CLITERAL(Color){ 99, 171, 63, 255 }
 
 static float spawn_x = -1.0f;
 static float spawn_y = -1.0f;
@@ -104,8 +104,7 @@ entity* create_player(float x, float y) {
         fprintf(stderr, "FAILED TO ALLOCATE MEMORY FOR PLAYER!\n");
         exit(EXIT_FAILURE);
     }
-    
-    player->scale = 0.125f; // TODO: update art and set scale to 1.0f
+    player->scale = 1.0f;
     player->x = x;
     player->y = y;
     spawn_x = x;

@@ -199,7 +199,7 @@ void scene_render_testing(scene *s, game *g)
 
     // draw asteroids
     for (int i = 0; i < asteroid_count; i++) {
-        draw_entity(&s->asteroids[i], g->tm->meteor_tex);
+        draw_entity_color(&s->asteroids[i], g->tm->meteor_tex, ASTEROID_COLOR);
     }
 
     // draw projectiles
